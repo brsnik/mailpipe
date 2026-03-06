@@ -1,19 +1,20 @@
-/.cargo
-.cargo
-/target
-.env
-/.idea
-.idea
+# OS / editor
 .DS_Store
+.idea/
+.env
 
-*debug/
-*target/
+# Rust / build artifacts
+.cargo/
+target/
+debug/
+Cargo.lock
 
-*Cargo.lock
-
-transport.db
-/postfix/*.db
-/postfix/*.lmdb
-/postfix/spool/
-
+# Runtime / generated output
 logs/
+docs/
+
+# Postfix generated/runtime files
+transport.db
+postfix/*.db
+postfix/*.lmdb
+postfix/spool/

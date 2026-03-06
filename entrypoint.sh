@@ -62,5 +62,5 @@ chmod 0644 /var/log/rustpipe.log
 test -s /etc/postfix/transport
 postmap /etc/postfix/transport
 
-# Start postfix master in foreground (Alpine path)
-exec /usr/libexec/postfix/master -c /etc/postfix -d
+# Keep Postfix in the foreground so the container PID 1 stays alive.
+exec postfix -c /etc/postfix start-fg
