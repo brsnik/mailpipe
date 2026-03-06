@@ -1,7 +1,7 @@
-# mailpipe (PoC)
+# 📩 mailpipe (PoC)
 
 `mailpipe` is a lightweight Alpine container bundling Postfix with a Rust handler (`rustpipe`).
-Postfix accepts inbound SMTP and pipes each accepted message to `rustpipe` for processing.
+Postfix accepts inbound SMTP and pipes each accepted message to `rustpipe` for processing and handoff.
 
 ## Why
 
