@@ -4,9 +4,8 @@ WORKDIR /app
 RUN apk add --no-cache build-base musl-dev pkgconfig
 
 COPY rustpipe/Cargo.toml ./
-COPY rustpipe/Cargo.lock ./
 COPY rustpipe/src ./src
-RUN cargo build --release --locked
+RUN cargo build --release
 
 
 FROM alpine:latest
@@ -22,6 +21,8 @@ COPY postfix/main.cf /etc/postfix/main.cf
 COPY postfix/master.cf /etc/postfix/master.cf
 
 COPY postfix/transport /etc/postfix/transport
+RUN chown root:root /etc/postfix/main.cf /etc/postfix/master.cf /etc/postfix/transport \
+ && chmod 0644 /etc/postfix/main.cf /etc/postfix/master.cf /etc/postfix/transport
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod 0755 /entrypoint.sh
