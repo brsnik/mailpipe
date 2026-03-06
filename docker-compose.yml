@@ -42,7 +42,8 @@ services:
 
     volumes:
       - ./logs:/var/log
-      # Mount TLS material (required when SMTPD_TLS_SECURITY_LEVEL is not "none")
+      - ./postfix/spool:/var/spool/postfix
+      # Mount TLS certificate and private key files (required when SMTPD_TLS_SECURITY_LEVEL is not "none")
       # - ./certs/fullchain.pem:/etc/postfix/tls/fullchain.pem:ro
       # - ./certs/privkey.pem:/etc/postfix/tls/privkey.pem:ro
 

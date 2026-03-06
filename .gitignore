@@ -14,5 +14,6 @@
 transport.db
 /postfix/*.db
 /postfix/*.lmdb
+/postfix/spool/
 
 logs/
