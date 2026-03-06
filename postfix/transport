@@ -1,0 +1,19 @@
+# Format: <pattern> <transport>:
+# First match wins.
+
+# Allow exact inboxes
+support@pipe.domain.tld    rustpipe:
+iodef@pipe.domain.tld      rustpipe:
+
+# Allow plus-addressing
+# Examples allowed:
+#   support+foo@pipe.domain.tld
+#   support+123@pipe.domain.tld
+# Examples NOT matched here:
+#   support@pipe.domain.tld      (no '+', handled above)
+#   foo+support@pipe.domain.tld  (does not start with 'support+')
+
+support+*@pipe.domain.tld  rustpipe:
+
+# Reject everything else
+*                           error:5.7.1:recipient not allowed

@@ -1,0 +1,56 @@
+services:
+  mailpipe:
+    build: .
+    image: mailpipe:latest
+    container_name: mailpipe
+    network_mode: host
+
+    environment:
+      # Mail domain used by Postfix (mydomain/myorigin)
+      - MAIL_DOMAIN=pipe.domain.tld
+      # SMTP hostname Postfix advertises (needs DNS A/AAAA + PTR)
+      - MAIL_HOSTNAME=inbound.pipe.domain.tld
+
+      # SMTP bind addresses (space-separated), e.g. loopback only:
+      - INET_INTERFACES=127.0.0.1 [::1]
+      # Network stack: all | ipv4 | ipv6
+      - INET_PROTOCOLS=all
+
+      # Relay allowlist CIDRs (space-separated)
+      # WARNING: every IP here can relay through this host!
+      # 0.0.0.0/0 [::]/0 = open relay (public abuse risk)
+      - RELAY_ALLOWLIST=0.0.0.0/0 [::]/0
+
+      # Extra Postfix debug output for these client IPs (space-separated)
+      - DEBUG_PEER_LIST=127.0.0.1 [::1]
+      # Debug level: 0=off, 1=low, 2=medium, 3=high, 4=very noisy
+      - DEBUG_PEER_LEVEL=3
+
+      # Inbound TLS policy: none | may | encrypt
+      # - SMTPD_TLS_SECURITY_LEVEL=encrypt
+      # TLS debug level: 0=off, 1=handshake/cert, 2=more detail, 3-4=very noisy
+      # - SMTPD_TLS_LOGLEVEL=2
+      # Mounted certificate and private key paths inside the container
+      # - SMTPD_TLS_CERT_FILE=/etc/postfix/tls/fullchain.pem
+      # - SMTPD_TLS_KEY_FILE=/etc/postfix/tls/privkey.pem
+
+      # rustpipe log level: off | error | warn | info | debug | trace
+      - RUST_LOG=info
+
+      # Container timezone
+      - TZ=UTC
+
+    volumes:
+      - ./logs:/var/log
+      # Mount TLS material (required when SMTPD_TLS_SECURITY_LEVEL is not "none")
+      # - ./certs/fullchain.pem:/etc/postfix/tls/fullchain.pem:ro
+      # - ./certs/privkey.pem:/etc/postfix/tls/privkey.pem:ro
+
+    healthcheck:
+      test: ["CMD-SHELL", "nc -w 3 127.0.0.1 25 < /dev/null | grep -q '^220 '"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    restart: unless-stopped
